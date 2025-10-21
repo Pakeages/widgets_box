@@ -88,10 +88,12 @@ class _ConfirmPasswordMainTextFieldState
           keyboardType: TextInputType.visiblePassword,
           prefixIcon:
               widget.prefixIcon ??
-              PrefixIconWidget(
+              buildPrefixIcon(
                 assetPath: AppImages.lock,
+                icon: Icons.lock,
                 color: widget.iconColor,
-                isShow: widget.showPrefixIcon,
+                showIcon: widget.showPrefixIcon,
+                context: context,
               ),
           suffixIcon:
               widget.suffixIcon ??
@@ -102,7 +104,6 @@ class _ConfirmPasswordMainTextFieldState
                 icon: PrefixIconWidget(
                   assetPath: showPassword ? AppImages.eyeSlash : AppImages.eye,
                   color: widget.iconColor,
-                  isShow: true,
                 ),
               ),
           hintText:

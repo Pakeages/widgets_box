@@ -1,5 +1,8 @@
 ## 0.0.5
 
+* fix images
+## 0.0.5
+
 * add icon customization options to text fields
 
 ## 0.0.4

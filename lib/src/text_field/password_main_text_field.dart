@@ -80,11 +80,16 @@ class _PasswordMainTextFieldState extends State<_PasswordMainTextField> {
       hintText: widget.hintText ?? SmartLocalizePlaceholder.enterPassword,
       prefixIcon:
           widget.prefixIcon ??
-          PrefixIconWidget(
-            assetPath: AppImages.lock,
+          buildPrefixIcon(
+            assetPath: 'packages/widgets_box/assets/images/lock.svg',
+
+            // assetPath: AppImages.lock,
+            icon: Icons.lock,
             color: widget.iconColor,
-            isShow: widget.showPrefixIcon,
+            context: context,
+            showIcon: widget.showPrefixIcon,
           ),
+
       suffixIcon:
           widget.suffixIcon ??
           IconButton(
@@ -94,7 +99,6 @@ class _PasswordMainTextFieldState extends State<_PasswordMainTextField> {
             icon: PrefixIconWidget(
               assetPath: showPassword ? AppImages.eyeSlash : AppImages.eye,
               color: widget.iconColor,
-              isShow: true,
             ),
           ),
       contentPadding: widget.contentPadding,

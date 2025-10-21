@@ -79,10 +79,12 @@ class _EmailMainTextFieldState extends State<_EmailMainTextField> {
       decoration: widget.decoration,
       prefixIcon:
           widget.prefixIcon ??
-          PrefixIconWidget(
+          buildPrefixIcon(
             assetPath: AppImages.sms,
+            icon: Icons.lock,
             color: widget.iconColor,
-            isShow: widget.showPrefixIcon,
+            showIcon: widget.showPrefixIcon,
+            context: context,
           ),
       suffixIcon: widget.suffixIcon,
       contentPadding: widget.contentPadding,

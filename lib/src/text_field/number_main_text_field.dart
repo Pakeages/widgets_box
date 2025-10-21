@@ -76,10 +76,12 @@ class _NumberMainTextFieldState extends State<_NumberMainTextField> {
       fillColor: widget.fillColor,
       prefixIcon:
           widget.prefixIcon ??
-          PrefixIconWidget(
+          buildPrefixIcon(
             assetPath: AppImages.calculator,
+            icon: Icons.lock,
             color: widget.iconColor,
-            isShow: widget.showPrefixIcon,
+            context: context,
+            showIcon: widget.showPrefixIcon,
           ),
       suffixIcon: widget.suffixIcon,
       contentPadding: widget.contentPadding,

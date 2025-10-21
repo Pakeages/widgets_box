@@ -16,7 +16,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WidgetsBoxConfigProvider(
-      config: WidgetsBoxConfig(textFieldConfig: TextFieldConfig()),
+      config: WidgetsBoxConfig(
+        textFieldConfig: TextFieldConfig(showIcon: true, iconColor: Colors.red),
+      ),
       child: StyledToast(
         locale: local,
         textDirection: local.languageCode == 'ar'
@@ -43,7 +45,6 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -54,15 +55,6 @@ class MyHomePage extends StatelessWidget {
           return ListView(
             padding: const EdgeInsets.all(16.0),
             children: [
-              Center(
-                child: SizedBox(
-                  width: 15,
-                  height: 15,
-                  child: CircularProgressIndicator.adaptive(
-                    backgroundColor: Colors.red,
-                  ),
-                ),
-              ),
               Text(SmartLocalize.goodAfternoon),
               MainButton.icon(
                 label: 'ok',
@@ -70,8 +62,9 @@ class MyHomePage extends StatelessWidget {
                 icon: Icons.add,
                 onPressed: () {},
               ),
-              MainTextField.email(
+              MainTextField.password(
                 title: SmartLocalize.email,
+
                 onChanged: (value) => log('Email changed: $value'),
               ),
 

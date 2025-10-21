@@ -1,4 +1,4 @@
-const String imagePath = 'packages/main_text_field/assets/images';
+const String imagePath = 'packages/widgets_box/assets/images';
 
 class AppImages {
   static const String eye = '$imagePath/eye.svg';
