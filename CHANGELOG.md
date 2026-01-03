@@ -1,4 +1,10 @@
+## 0.0.9
+
+This PR introduces significant refactoring to the text field widgets for improved consistency,
+enhances the icon button with new positioning options, and updates the project documentation.
+
 ## 0.0.8
+
 * Refactor `MainTextField` and its subclasses for parameter normalization.
 * Add `minLines`, `maxLines`, `maxLength`, `textDirection`, `hintTextDirection` to all text fields.
 * Add `isIconEnd` to `MainButton.icon` to support placing icon after (end of) the label.
@@ -10,6 +16,7 @@
 * add empty widget
 
 ## 0.0.6
+
 * fix images
 
 ## 0.0.5

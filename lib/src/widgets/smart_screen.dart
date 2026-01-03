@@ -42,7 +42,7 @@ class SmartScreen extends StatelessWidget {
     super.key,
     required this.builder,
     this.isLoading = false,
-    this.loadingType = LoadingType.skeleton,
+    this.loadingType = LoadingType.indicator,
     this.isEmpty = false,
     this.message,
     this.emptyWidget,
