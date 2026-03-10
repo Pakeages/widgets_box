@@ -4,6 +4,7 @@ class _PhoneMainTextField extends MainTextField {
   final void Function(CountryCode)? onChangedCountryCode;
   final List<String> favoriteCountryCode;
   final String? countryCode;
+  final bool hideTitle;
 
   const _PhoneMainTextField({
     required this.onChangedCountryCode,
@@ -48,6 +49,7 @@ class _PhoneMainTextField extends MainTextField {
     required super.maxLines,
     required super.maxLength,
     required super.hintTextDirection,
+    required this.hideTitle,
   });
 
   @override
@@ -60,7 +62,7 @@ class _PhoneMainTextFieldState extends State<_PhoneMainTextField> {
     return MainTextField(
       autofillHints: [AutofillHints.username],
       maxWidth: widget.maxWidth,
-      title: widget.title ?? SmartLocalize.phone,
+      title: widget.hideTitle ? null : (widget.title ?? SmartLocalize.phone),
       spaceBetween: widget.spaceBetween,
       onTap: widget.onTap,
       inputFormatters: [
