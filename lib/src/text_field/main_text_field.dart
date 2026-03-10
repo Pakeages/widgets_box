@@ -579,8 +579,10 @@ class MainTextField extends StatefulWidget {
     String? hintText,
     TextDirection textDirection = TextDirection.ltr,
     int? maxLength,
+    bool hideTitle = false,
   }) {
     return _PhoneMainTextField(
+      hideTitle: hideTitle,
       countryCode: initialCountryCode,
       onChangedCountryCode: onChangedCountryCode,
       favoriteCountryCode: favoriteCountryCode,
