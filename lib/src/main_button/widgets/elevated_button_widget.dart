@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../widgets_box.dart';
+import '../../config/main_config.dart';
+import 'main_button.dart';
 import '../decoration/button_style_class.dart';
 import '../functions/get_button_color.dart';
 import 'circular_indicator_widget.dart';
@@ -48,13 +49,29 @@ class ElevatedButtonWidget extends StatelessWidget {
 
   final double? opacity;
 
-  /// type => default value is MainButtonEnum.primary
-  final MainButtonEnum? type;
+  /// type => default value is WBButtonType.primary
+  final WBButtonType? type;
 
   final Widget? child;
 
   /// labelColor => default value is Colors.white
   final Color? labelColor;
+
+  /// Optional gradient background. When set it paints behind the button and the
+  /// solid background color is made transparent so the gradient shows through.
+  final Gradient? gradient;
+
+  /// Accessibility / UI-test identifier for the button.
+  final String? semanticsIdentifier;
+
+  /// Called on a long press.
+  final void Function()? onLongPress;
+
+  /// Focus node for the button.
+  final FocusNode? focusNode;
+
+  /// Whether the button grabs focus on first build.
+  final bool autofocus;
 
   const ElevatedButtonWidget({
     super.key,
@@ -77,19 +94,41 @@ class ElevatedButtonWidget extends StatelessWidget {
     this.borderColor,
     this.opacity,
     this.type,
+    this.gradient,
+    this.semanticsIdentifier,
+    this.onLongPress,
+    this.focusNode,
+    this.autofocus = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final config = WidgetsBoxConfigProvider.of(context);
-    final typeValue = type ?? MainButtonEnum.primary;
-    return DecoratedBox(
+    final typeValue = type ?? WBButtonType.primary;
+    // Resolution order: widget prop -> ButtonConfig -> top-level -> default.
+    final resolvedRadius = radius ??
+        config.buttonConfig?.radius ??
+        config.radius ??
+        WidgetsBoxConfig.defaults.radius!;
+    final resolvedHeight = height ??
+        config.buttonConfig?.height ??
+        config.height ??
+        WidgetsBoxConfig.defaults.height!;
+    final resolvedMaxWidth = maxWidth ??
+        config.buttonConfig?.width ??
+        config.width ??
+        WidgetsBoxConfig.defaults.width!;
+    final resolvedPadding = contentPadding ??
+        config.buttonConfig?.contentPadding ??
+        config.contentPadding ??
+        const EdgeInsets.all(12);
+    final Widget decorated = DecoratedBox(
       decoration: ShapeDecoration(
-        color: Colors.transparent,
+        // ShapeDecoration forbids color + gradient together.
+        color: gradient != null ? null : Colors.transparent,
+        gradient: gradient,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(radius ?? config.radius ?? 8),
-          ),
+          borderRadius: BorderRadius.all(Radius.circular(resolvedRadius)),
         ),
         shadows: !(showShadow ?? false)
             ? null
@@ -105,30 +144,39 @@ class ElevatedButtonWidget extends StatelessWidget {
       child: ElevatedButton(
         style: ButtonStyleClass(
           width: width ?? double.infinity,
-          maxWidth:
-              maxWidth ?? config.buttonConfig?.width ?? config.width ?? 370,
-          height: height ?? config.height ?? 44,
-          radius: radius ?? config.radius ?? 8,
+          maxWidth: resolvedMaxWidth,
+          height: resolvedHeight,
+          radius: resolvedRadius,
           labelColor: getTextColor(typeValue, context, color: labelColor),
           borderColor: getBorderColor(typeValue, context, color: borderColor),
-          background: getBorderColor(
-            typeValue,
-            context,
-            color: backgroundColor,
-          ),
+          // When a gradient is supplied, keep the button surface transparent so
+          // the gradient behind it shows through.
+          background: gradient != null
+              ? Colors.transparent
+              : getBackgroundColor(
+                  typeValue,
+                  context,
+                  color: backgroundColor,
+                ),
           context: context,
           smallSize: smallSize ?? false,
           opacity: opacity,
-          contentPadding: contentPadding ?? const EdgeInsets.all(12),
+          contentPadding: resolvedPadding,
           disableColor: disableColor ?? Colors.grey.shade100,
+          disableLabelColor: config.buttonConfig?.disableLabelColor,
         ).apply,
         onPressed: (isLoading ?? false) || (isDisable ?? false)
             ? null
             : onPressed,
+        onLongPress: (isLoading ?? false) || (isDisable ?? false)
+            ? null
+            : onLongPress,
+        focusNode: focusNode,
+        autofocus: autofocus,
         child: (isLoading ?? false)
             ? SizedBox(
-                width: (smallSize ?? false) ? 60 : width,
-                height: (smallSize ?? false) ? 40 : height,
+                width: (smallSize ?? false) ? 60 : null,
+                height: (smallSize ?? false) ? 40 : resolvedHeight,
                 child: CircularIndicatorWidget(
                   color: getLoadingColor(typeValue, context, color: labelColor),
                 ),
@@ -136,5 +184,7 @@ class ElevatedButtonWidget extends StatelessWidget {
             : child,
       ),
     );
+    if (semanticsIdentifier == null) return decorated;
+    return Semantics(identifier: semanticsIdentifier, child: decorated);
   }
 }

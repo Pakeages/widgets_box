@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:widgets_box/widgets_box.dart';
 
-class SmartStatusWidget extends StatelessWidget {
+import '../extension/context_extension.dart';
+
+class WBPositionedStatus extends StatelessWidget {
   final double height;
   final BorderRadiusGeometry? borderRadius;
   final Color? backgroundColor;
@@ -11,7 +12,7 @@ class SmartStatusWidget extends StatelessWidget {
   final TextStyle? style;
   final EdgeInsetsGeometry? padding;
 
-  const SmartStatusWidget({
+  const WBPositionedStatus({
     super.key,
     this.height = 26,
     this.borderRadius,
@@ -33,12 +34,13 @@ class SmartStatusWidget extends StatelessWidget {
         PositionedDirectional(
           end: 0,
           height: height,
-          child: StatusWidget(
+          child: WBStatus(
             height: height,
             borderRadius: borderRadius,
             backgroundColor: backgroundColor,
             textColor: textColor,
             text: text,
+            style: style,
             padding: padding,
           ),
         ),
@@ -47,7 +49,7 @@ class SmartStatusWidget extends StatelessWidget {
   }
 }
 
-class StatusWidget extends StatelessWidget {
+class WBStatus extends StatelessWidget {
   final double height;
   final BorderRadiusGeometry? borderRadius;
   final Color? backgroundColor;
@@ -57,7 +59,22 @@ class StatusWidget extends StatelessWidget {
   final TextStyle? style;
   final EdgeInsetsGeometry? padding;
 
-  const StatusWidget({
+  /// Optional leading icon, tinted to match the label color.
+  final IconData? icon;
+
+  /// When true, renders as an outlined pill (transparent fill + colored
+  /// border) instead of the filled/translucent default.
+  final bool outlined;
+
+  /// Draws a border in this color IN ADDITION to the fill (some chips use a
+  /// translucent fill plus a stronger same-hue border). Ignored when [outlined]
+  /// is true (which draws its own border).
+  final Color? borderColor;
+
+  /// Shows a small filled dot (in [textColor]) before the label.
+  final bool leadingDot;
+
+  const WBStatus({
     super.key,
     required this.text,
     this.height = 26,
@@ -67,26 +84,64 @@ class StatusWidget extends StatelessWidget {
     this.radius = 12,
     this.style,
     this.padding,
+    this.icon,
+    this.outlined = false,
+    this.borderColor,
+    this.leadingDot = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final resolvedRadius =
+        borderRadius ?? BorderRadius.all(Radius.circular(radius));
+    final label = Text(
+      text,
+      overflow: TextOverflow.ellipsis,
+      style:
+          style?.copyWith(color: textColor) ??
+          context.bodySmall?.copyWith(color: textColor),
+    );
+
     return Container(
       height: height,
       padding:
           padding ?? const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
-        color: backgroundColor ?? textColor?.withValues(alpha: 0.05),
-        borderRadius: borderRadius ?? BorderRadius.all(Radius.circular(radius)),
+        color: outlined
+            ? Colors.transparent
+            : (backgroundColor ?? textColor?.withValues(alpha: 0.05)),
+        borderRadius: resolvedRadius,
+        border: outlined
+            ? Border.all(
+                color: textColor ?? Theme.of(context).colorScheme.outline,
+              )
+            : (borderColor != null ? Border.all(color: borderColor!) : null),
       ),
       alignment: Alignment.center,
-      child: Text(
-        text,
-        overflow: TextOverflow.ellipsis,
-        style:
-            style?.copyWith(color: textColor) ??
-            context.bodySmall?.copyWith(color: textColor),
-      ),
+      child: (icon == null && !leadingDot)
+          ? label
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (leadingDot)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 6),
+                    child: Container(
+                      width: 6,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        color: textColor,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                if (icon != null) ...[
+                  Icon(icon, size: 14, color: textColor),
+                  const SizedBox(width: 4),
+                ],
+                Flexible(child: label),
+              ],
+            ),
     );
   }
 }

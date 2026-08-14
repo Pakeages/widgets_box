@@ -5,7 +5,7 @@ part of 'main_button.dart';
 /// This button supports various states such as loading and disabled, allows customization
 /// of its appearance through properties like padding, border radius, and colors, and can display
 /// either an image, an icon, or text.
-class _MainIconButton extends MainButton {
+class _MainIconButton extends WBButton {
   /// The path to an image asset to be displayed inside the button. If `null`, no image will be shown.
   final String? imagePath;
 
@@ -69,7 +69,7 @@ class _MainIconButton extends MainButton {
       borderColor: borderColor,
       smallSize: smallSize,
       opacity: opacity,
-      type: type ?? MainButtonEnum.primary,
+      type: type ?? WBButtonType.primary,
       onPressed: onPressed,
       child: SizedBox(
         width: width,
@@ -94,7 +94,7 @@ class _MainIconButton extends MainButton {
                             height: 0.0,
                           ),
                     ),
-                    SizedBox(width: spaceBetween),
+                    SizedBox(width: spaceBetween ?? 8),
                     ImageWidget(
                       iconType: iconType,
                       imagePath: imagePath,
@@ -117,7 +117,7 @@ class _MainIconButton extends MainButton {
                           iconColor ??
                           Theme.of(context).textTheme.labelMedium!.color,
                     ),
-                    SizedBox(width: spaceBetween),
+                    SizedBox(width: spaceBetween ?? 8),
                     TextWidget(
                       label: label,
                       labelStyle:

@@ -1,6 +1,6 @@
 part of 'main_text_field.dart';
 
-class _NumberMainTextField extends MainTextField {
+class _NumberMainTextField extends WBTextField {
   const _NumberMainTextField({
     required super.maxWidth,
     required super.title,
@@ -51,7 +51,7 @@ class _NumberMainTextField extends MainTextField {
 class _NumberMainTextFieldState extends State<_NumberMainTextField> {
   @override
   Widget build(BuildContext context) {
-    return MainTextField(
+    return WBTextField(
       titleStyle: widget.titleStyle,
       maxWidth: widget.maxWidth,
       title: widget.title ?? SmartLocalize.number,
@@ -68,10 +68,13 @@ class _NumberMainTextFieldState extends State<_NumberMainTextField> {
       onSaved: widget.onSaved,
       isRequired: widget.isRequired,
       validator: widget.validator ?? (val) => validateNumberFormat(val),
-      inputFormatters: [
-        FilteringTextInputFormatter.digitsOnly,
-        ...?widget.inputFormatters,
-      ],
+      // Decimal-tolerant by default (money/quantity inputs) with a decimal
+      // keyboard. Callers can still supply their own formatters, which run
+      // after this default filter.
+      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+      inputFormatters:
+          widget.inputFormatters ??
+          [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))],
       textInputAction: widget.textInputAction,
       focusNode: widget.focusNode,
       textCapitalization: widget.textCapitalization,

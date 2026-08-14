@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:widgets_box/src/extension/initials_extension.dart';
-import 'package:widgets_box/widgets_box.dart';
 
-class SmartUserImage extends StatelessWidget {
+import '../extension/context_extension.dart';
+import '../extension/initials_extension.dart';
+import 'smart_cached_images.dart';
+
+class WBUserImage extends StatelessWidget {
   final String? photo;
   final String displayName;
   final TextStyle? style;
@@ -10,7 +12,7 @@ class SmartUserImage extends StatelessWidget {
   final Color? borderColor;
   final double? imageSize;
 
-  const SmartUserImage({
+  const WBUserImage({
     super.key,
     this.photo,
     required this.displayName,
@@ -107,7 +109,7 @@ class CircleImageWidget extends StatelessWidget {
         border: Border.all(color: Colors.grey.shade300, width: 0.5),
       ),
       clipBehavior: Clip.antiAlias,
-      child: SmartCachedImages(
+      child: WBCachedImage(
         imageUrl: '$photo',
         width: size,
         height: size,

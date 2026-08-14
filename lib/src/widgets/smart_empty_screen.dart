@@ -14,7 +14,7 @@ enum EmptyType {
   text,
 }
 
-class SmartEmptyWidget extends StatelessWidget {
+class WBEmptyState extends StatelessWidget {
   /// The message to display in the empty state. Defaults to 'no_data_found' if not provided.
   final String? title;
   final String? subtitle;
@@ -43,7 +43,14 @@ class SmartEmptyWidget extends StatelessWidget {
   /// buttonWidget.
   final Widget? buttonWidget;
 
-  const SmartEmptyWidget({
+  /// When provided (and [buttonWidget] is null), renders a retry button that
+  /// calls this — the common "empty because it failed, tap to retry" case.
+  final VoidCallback? onRetry;
+
+  /// Label for the built-in retry button. Defaults to a localized "Retry".
+  final String? retryLabel;
+
+  const WBEmptyState({
     super.key,
     this.subtitle,
     this.title,
@@ -55,7 +62,28 @@ class SmartEmptyWidget extends StatelessWidget {
     this.messageStyle,
     this.titleStyle,
     this.buttonWidget,
+    this.onRetry,
+    this.retryLabel,
   });
+
+  /// Wraps this empty state in a sliver so it can fill the viewport inside a
+  /// `CustomScrollView` (a variant every app hand-rolls as `.toSliver`).
+  Widget toSliver() =>
+      SliverFillRemaining(hasScrollBody: false, child: this);
+
+  Widget? _effectiveButton() {
+    if (buttonWidget != null) return buttonWidget;
+    if (onRetry != null) {
+      return Builder(
+        builder: (context) => FilledButton.tonalIcon(
+          onPressed: onRetry,
+          icon: const Icon(Icons.refresh, size: 18),
+          label: Text(retryLabel ?? SmartLocalize.retry),
+        ),
+      );
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +98,7 @@ class SmartEmptyWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (emptyImage != null)
-                  emptyImage!.split('.').last == 'svg'
+                  emptyImage!.toLowerCase().split('?').first.endsWith('.svg')
                       ? SvgPicture.asset(emptyImage!)
                       : Image.asset(emptyImage!)
                 else
@@ -100,14 +128,15 @@ class SmartEmptyWidget extends StatelessWidget {
                 if (subtitle != null) ...[
                   SizedBox(height: 12),
                   Text(
-                    subtitle ?? SmartLocalize.noDataFound,
+                    subtitle!,
+                    textAlign: TextAlign.center,
                     style:
                         messageStyle ?? Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
-                if (buttonWidget != null) ...[
+                if (_effectiveButton() case final button?) ...[
                   SizedBox(height: 24),
-                  buttonWidget!,
+                  button,
                 ],
               ],
             ),
@@ -115,10 +144,21 @@ class SmartEmptyWidget extends StatelessWidget {
         );
       case EmptyType.text:
         // Displays only a text message when using the EmptyType.text.
+        final button = _effectiveButton();
         return Center(
-          child: Text(
-            title ?? SmartLocalize.noDataFound,
-            style: messageStyle ?? Theme.of(context).textTheme.bodyMedium,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                title ?? SmartLocalize.noDataFound,
+                textAlign: TextAlign.center,
+                style: messageStyle ?? Theme.of(context).textTheme.bodyMedium,
+              ),
+              if (button != null) ...[
+                const SizedBox(height: 16),
+                button,
+              ],
+            ],
           ),
         );
       case EmptyType.custom:
