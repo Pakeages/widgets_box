@@ -16,6 +16,14 @@ part 'number_main_text_field.dart';
 part 'password_main_text_field.dart';
 part 'phone_main_text_field.dart';
 
+Widget _defaultContextMenuBuilder(
+  BuildContext context,
+  EditableTextState editableTextState,
+) => AdaptiveTextSelectionToolbar.buttonItems(
+  anchors: editableTextState.contextMenuAnchors,
+  buttonItems: editableTextState.contextMenuButtonItems,
+);
+
 /// A custom text form field widget that provides a variety of configurable options
 /// including borders, icons, validation, and text input handling.
 class WBTextField extends StatefulWidget {
@@ -223,7 +231,7 @@ class WBTextField extends StatefulWidget {
     this.onTapOutside,
     this.titleTrailing,
     this.semanticsIdentifier,
-    this.contextMenuBuilder,
+    this.contextMenuBuilder = _defaultContextMenuBuilder,
     this.keyboardAppearance,
     this.scrollController,
     this.scrollPadding = const EdgeInsets.all(20),
@@ -702,7 +710,8 @@ class _MainTextFieldState extends State<WBTextField> {
     final textFieldConfig = config.textFieldConfig;
     final Widget field = ConstrainedBox(
       constraints: BoxConstraints(
-        maxWidth: widget.maxWidth ??
+        maxWidth:
+            widget.maxWidth ??
             textFieldConfig?.width ??
             config.width ??
             WidgetsBoxConfig.defaults.width!,

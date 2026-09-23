@@ -1,3 +1,11 @@
+## 0.2.1
+
+* fix: restore Flutter's adaptive copy/paste context menu by default for
+  `WBTextField`, including the `.email` and `.password` factories.
+* fix: keep disabled button labels legible, including buttons disabled by a
+  null `onPressed` callback.
+* test: cover clipboard paste availability for email and password fields.
+
 ## 0.2.0
 
 * feat: cross-app helper/widget library mined from the consuming apps — additive, `WB`-prefixed/namespaced to avoid collisions:

@@ -2,9 +2,9 @@ name: widgets_box
 description: "A Flutter package for efficient UI state management, handling
   loading, empty views, content display, caching, and pull-to-refresh with
   customizable widgets."
-version: 0.2.0
+version: 0.2.1
 homepage: https://github.com/abdelrahmanghanem
-repository: https://github.com/abdelrahmanghanem/widgets_box
+repository: https://github.com/abdelrahmanghanem/ui_widgets
 
 screenshots:
   - path: doc/cover.png
