@@ -1,3 +1,7 @@
+## 0.2.2
+
+- Accept current package_info_plus releases as well as existing supported releases; the shared app version widget still uses the same PackageInfo.fromPlatform API. This permits hosts to resolve current native plugins without overriding win32.
+
 ## 0.2.1
 
 * fix: restore Flutter's adaptive copy/paste context menu by default for
